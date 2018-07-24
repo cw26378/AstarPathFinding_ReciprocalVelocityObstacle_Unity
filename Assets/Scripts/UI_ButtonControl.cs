@@ -8,8 +8,10 @@ public class UI_ButtonControl : MonoBehaviour {
     public bool SpawnIsDone = false;
     public bool ToAddGround = false;
     public bool ToAddAir = false;
-	
-	public void ChangeAddGround () {
+
+
+	public void ChangeAddGround () 
+    {
 
         ToAddGround = true;
         ToAddAir = false;

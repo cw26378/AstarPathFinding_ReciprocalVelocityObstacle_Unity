@@ -7,7 +7,7 @@ public class CreateAgent : MonoBehaviour {
     // Use this for initialization
     public GameObject new_RVO_agent;
     public GameObject new_agentAir;
-
+    public int N_Air = 0;
     private bool SpawnIsDone;
     private bool IsGround;
     private bool IsAir;
@@ -51,6 +51,7 @@ public class CreateAgent : MonoBehaviour {
                 {
                     if (AstarPath.active.GetNearest(hit.point).node.Walkable == false)
                     {
+                        // Only ground units have the limit of walkable or not
                         Debug.Log("Cannot deploy units on non-walkable region!");
                         return;
                     }
@@ -61,7 +62,8 @@ public class CreateAgent : MonoBehaviour {
                 else if(IsAir){
                     Debug.Log("New Air Unit Deployed");
                     spawnTarget.y = height;
-                    newAgent = Instantiate(new_agentAir, new Vector3(spawnTarget.x, transform.position.y, spawnTarget.z), Quaternion.Euler(0, 0, 0)) as GameObject;
+                    newAgent = Instantiate(new_agentAir, new Vector3(spawnTarget.x, spawnTarget.y, spawnTarget.z), Quaternion.Euler(0, 0, 0)) as GameObject;
+                    N_Air += 1;
                 }
                 else{
                     Debug.Log("Nothing is generated");

@@ -16,6 +16,7 @@ public class AirAgent_Move : MonoBehaviour {
     //int currentNodeIndex = 0;
     bool goalSelected = false;
     private bool rallyIsReady = false;
+    private int numAirUnits = 0;
     //private List<Vector3> pathNodes = null;
     //bool isAbleToStart = false;
     //float thresholdToNode = 4.0f;
@@ -48,6 +49,7 @@ public class AirAgent_Move : MonoBehaviour {
     void FixedUpdate()
     {
         rallyIsReady = GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
+        numAirUnits = GameObject.Find("AI").GetComponent<CreateAgent>().N_Air;
         if (rallyIsReady)
         {
 
@@ -68,7 +70,7 @@ public class AirAgent_Move : MonoBehaviour {
                     //seeker.StartPath(transform.position, target, OnPathComplete);
                 }
             }
-            if (goalSelected && (Vector3.Distance(leadAirAgent.transform.position, target) > characterController.radius * 0.5f))
+            /*if (goalSelected && (Vector3.Distance(leadAirAgent.transform.position, target) > characterController.radius * 0.5f))
             {
                 //Debug.Log("Before move, position = " + transform.position.ToString());
                 //every air agent uses the same goal vector since they can all be shifted together
@@ -81,6 +83,34 @@ public class AirAgent_Move : MonoBehaviour {
 
                 transform.position += velocity * Time.deltaTime;
                 //Debug.Log("after move, position = " + transform.position.ToString());
+            }
+            */
+            if (goalSelected)
+            {
+                Debug.Log("Lead Agent is at: " + leadAirAgent.transform.position.ToString());
+                if (Vector3.Distance(transform.position, target) > characterController.radius * numAirUnits)
+                {
+                    Vector3 dir_vector = target - transform.position;
+                    Vector3 velocity = new Vector3(dir_vector.x, 0.0f, dir_vector.z).normalized * speed_target;
+                    transform.position += velocity * Time.deltaTime;
+
+                }
+                else if (Vector3.Distance(leadAirAgent.transform.position, target) > characterController.radius * 0.5f)
+                {
+                    //Debug.Log("Before move, position = " + transform.position.ToString());
+                    //every air agent uses the same goal vector since they can all be shifted together
+                    Vector3 goal_vector = target - leadAirAgent.transform.position;
+
+                    Vector3 velocity = new Vector3(goal_vector.x, 0.0f, goal_vector.z).normalized * speed_target;
+                    //Debug.Log("Velocity of the current move = " + velocity.ToString());
+
+                    //Debug.Log("Distance to target = " + Vector3.Distance(transform.position, target).ToString());
+
+                    transform.position += velocity * Time.deltaTime;
+                    //Debug.Log("after move, position = " + transform.position.ToString());
+                }
+
+
             }
 
         }

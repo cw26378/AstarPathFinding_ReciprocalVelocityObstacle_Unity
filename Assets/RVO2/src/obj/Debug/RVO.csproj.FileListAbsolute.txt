@@ -1,0 +1,6 @@
+/Users/austen/A-start PathFinding/RVO2/src/bin/Debug/RVO.dll
+/Users/austen/A-start PathFinding/RVO2/src/bin/Debug/RVO.pdb
+/Users/austen/A-start PathFinding/RVO2/src/obj/Debug/RVO.csprojResolveAssemblyReference.cache
+/Users/austen/A-start PathFinding/RVO2/src/obj/Debug/RVO.csproj.CoreCompileInputs.cache
+/Users/austen/A-start PathFinding/RVO2/src/obj/Debug/RVO.dll
+/Users/austen/A-start PathFinding/RVO2/src/obj/Debug/RVO.pdb

@@ -7,6 +7,7 @@ using RVO;
 public class RVO_Agent : MonoBehaviour {
 
     public Camera cam;
+    public float distToNew;
 
     [SerializeField]
     Vector3 target;
@@ -22,6 +23,7 @@ public class RVO_Agent : MonoBehaviour {
     Seeker seeker;
     Path path;
     CharacterController characterController;
+
     // Use IEnumerator for initialization
 
     IEnumerator Start()
@@ -34,13 +36,13 @@ public class RVO_Agent : MonoBehaviour {
         // pathNodes = new List<Vector3>();
         yield return StartCoroutine(StartPaths());
         agentIndex = simulator.addAgentToSimulator(transform.position, gameObject, pathNodes);
-
+        //Debug.Log("current agent index: "+agentIndex);
         //isAbleToStart = true;
     }
     IEnumerator StartPaths()
     {
         seeker = gameObject.GetComponent<Seeker>();
-        target = transform.position + transform.forward * simulator.speed_target * 0.1f;
+        target = transform.position + transform.forward * simulator.speed_target * 0.01f;
         //target = Input.mousePosition;
         path = seeker.StartPath(transform.position, new Vector3(target.x, transform.position.y, target.z), OnPathComplete);
         yield return StartCoroutine(path.WaitForPath());
@@ -91,6 +93,11 @@ public class RVO_Agent : MonoBehaviour {
 	void FixedUpdate () 
     {
         rallyIsReady = GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
+        if (!rallyIsReady)
+        {
+            //Debug.Log("Is there new unit created? "+ GameObject.Find("AI").GetComponent<CreateAgent>().IsAdded.ToString());
+            CheckPushAway();
+        }
         if (rallyIsReady)
         {
             if (Input.GetMouseButtonDown(0))
@@ -159,5 +166,30 @@ public class RVO_Agent : MonoBehaviour {
             node_pos = pathNodes[pathNodes.Count - 1];
         }
         return new RVO.Vector2(node_pos.x, node_pos.z);
+    }
+
+    void CheckPushAway()
+    {
+        //List<GameObject> NearbyAgentList  = new List<GameObject>();
+        foreach(var agent in GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>().rvoGameObjs)
+        {
+            float agentDist = Vector3.Distance(agent.transform.position, transform.position);
+            if (agentDist > 0 &&  agentDist < (characterController.radius + agent.GetComponent < CharacterController>().radius) * 1.25f)
+            {
+                Vector3 dirMove = (transform.position - agent.transform.position).normalized;
+                if (AstarPath.active.GetNearest(transform.position + dirMove * Time.deltaTime).node.Walkable == true)
+                {
+                    transform.Translate(dirMove * Time.deltaTime);
+                }
+                    
+            }
+        }
+
+        // the tranform need update in the agentPositionlist
+        if (agentIndex != -1)
+        {
+           GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>().agentPositions[agentIndex] = new RVO.Vector2(transform.position.x, transform.position.z);
+        }
+
     }
 }

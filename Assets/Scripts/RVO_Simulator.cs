@@ -7,10 +7,11 @@ public class RVO_Simulator : MonoBehaviour {
 
     //Externally set parameters
     public float thresholdToMove;
-    public float speed_target; 
+    public float speed_target;
+
     // The simulator needs to know each agent's position
-    List<RVO.Vector2> agentPositions;
-    List<GameObject> rvoGameObjs;
+    public List<RVO.Vector2> agentPositions;
+    public List<GameObject> rvoGameObjs;
 
     private bool rallyIsReady = false;
 

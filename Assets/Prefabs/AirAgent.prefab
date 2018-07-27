@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 23899139968259994}
   - component: {fileID: 143557200271034046}
   - component: {fileID: 114785797536053894}
+  - component: {fileID: 135571755438858776}
   m_Layer: 9
   m_Name: AirAgent
   m_TagString: Untagged
@@ -100,7 +101,20 @@ MonoBehaviour:
   leadAirAgent: {fileID: 0}
   air_height: 60
   speed_target: 40
+  current_index: 0
   target: {x: 0, y: 0, z: 0}
+--- !u!135 &135571755438858776
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1911996032234504}
+  m_Material: {fileID: 13400000, guid: b0e2d2490488d42e29d11b67e50cfcd4, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!143 &143557200271034046
 CharacterController:
   m_ObjectHideFlags: 1
@@ -112,7 +126,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 2.0001
+  m_Radius: 4
   m_SlopeLimit: 30
   m_StepOffset: 0.3
   m_SkinWidth: 0.08

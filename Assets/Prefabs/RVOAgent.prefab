@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &143766448495650910
 CharacterController:
@@ -136,7 +137,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 2.001
+  m_Radius: 2
   m_SlopeLimit: 5
   m_StepOffset: 0.3
   m_SkinWidth: 0.04

@@ -6,72 +6,7 @@ using Pathfinding;
 public class PotentialMapSet : MonoBehaviour
 {
     private int largePenalty = 10000;
-    //public List<Vector3> pathNodeFromPotential = new List<Vector3>();
-    //public Vector2[,] fieldMapResult;
-    public Camera cam;
-    public float stepPerGrid;
-
-    // Use this for initialization
-    void Start()
-    {
-        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        int gridDepth = AstarPath.active.data.gridGraph.Depth;
-        int gridWidth = AstarPath.active.data.gridGraph.Width;
-
-        // fieldMapResult = new Vector2[gridDepth, gridWidth];
-    }
-
-    // Update is called once per frame
-    /*void FixedUpdate()
-    {
-        bool rallyIsReady = GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
-        if (rallyIsReady && Input.GetMouseButtonDown(0))
-        {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                Vector3 target = hit.point;
-                Vector2 target2D = new Vector2(target.x, target.z);
-                Debug.Log("current target AFTER update: " + target.ToString());
-                if (hit.point.y > 10)
-                {
-                    Debug.Log("non-walkable point selected, please reselect an available point!");
-                    return;
-                }
-
-                // if hit.point.y is walkable. build up the potential map based on the grid.
-
-                var gridgraph = AstarPath.active.data.gridGraph;
-
-                int[,] potentialmap = new int[gridgraph.Depth, gridgraph.Width];
-
-                //generate the potential map based on destination target and gridgraph
-                potentialmap = GetPotentialMap(target, gridgraph);
-
-                //check the potentialmap
-                Debug.Log("potential map is obtained. Above origin, the potential is like : " + potentialmap[48, 49].ToString());
-                Debug.Log("potential Map is obtained. Below origin, the potential is like : " + potentialmap[51, 49].ToString());
-
-                int[,] padded_potentialmap = PadMap(potentialmap);
-
-                // demonstrate the potential map real-time
-
-
-                // generate the field map by doing the gradient of potential map
-
-                fieldMapResult = GetFieldMap(padded_potentialmap);
-
-                Debug.Log("FieldMap is obtained. Above origin, the vector is like : " + fieldMapResult[49, 49].ToString());
-                Debug.Log("FieldMap is obtained. Below origin, the vector is like : " + fieldMapResult[50, 49].ToString());
-                //demonstrate the vector field map real time
-
-                // get path from vector2 fieldMap will be done in a different function
-
-            }
-        }
-    }*/
+    float stepPerGrid;
 
     public List<Vector3> GetPathFromFieldMap(Vector3 startPosition, Vector3 target, Vector2[,] fieldMap)
     {

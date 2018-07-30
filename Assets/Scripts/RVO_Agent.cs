@@ -16,14 +16,14 @@ public class RVO_Agent : MonoBehaviour {
 
     RVO_Simulator simulator = null;
     private List<Vector3> pathNodes = new List<Vector3>();
-    bool isAbleToStart = false;
+    //bool isAbleToStart = false;
     private bool rallyIsReady = false;
     float thresholdToNode = 4.0f;
 
     Seeker seeker;
     Path path;
     CharacterController characterController;
-
+    bool UseAStar;
     // Use IEnumerator for initialization
 
     IEnumerator Start()
@@ -34,7 +34,9 @@ public class RVO_Agent : MonoBehaviour {
         characterController = GetComponent<CharacterController>();
         // rallyIsReady= GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
         // pathNodes = new List<Vector3>();
+
         yield return StartCoroutine(StartPaths());
+            
         agentIndex = simulator.addAgentToSimulator(transform.position, gameObject, pathNodes);
         //Debug.Log("current agent index: "+agentIndex);
         //isAbleToStart = true;
@@ -48,28 +50,7 @@ public class RVO_Agent : MonoBehaviour {
         yield return StartCoroutine(path.WaitForPath());
     }
 
-    // no use of IEnumerator
-    /*
-    void Start()
-    {
-        currentNodeIndex = 0;
-        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        simulator = GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>();
-        characterController = GetComponent<CharacterController>();
 
-        //StartPaths();
-
-        seeker = gameObject.GetComponent<Seeker>();
-        target = transform.position + transform.forward * simulator.speed_target * 0.1f;
-        //target = Input.mousePosition;
-        path = seeker.StartPath(transform.position, new Vector3(target.x, transform.position.y, target.z), OnPathComplete);
-
-
-        agentIndex = simulator.addAgentToSimulator(transform.position, gameObject, pathNodes);
-
-        //isAbleToStart = true;
-    }
-    */
     public void OnPathComplete(Path p)
     {
         // We got our path back
@@ -93,6 +74,8 @@ public class RVO_Agent : MonoBehaviour {
 	void FixedUpdate () 
     {
         rallyIsReady = GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
+        UseAStar = true;
+
         if (!rallyIsReady)
         {
             //Debug.Log("Is there new unit created? "+ GameObject.Find("AI").GetComponent<CreateAgent>().IsAdded.ToString());
@@ -111,18 +94,66 @@ public class RVO_Agent : MonoBehaviour {
                 {
                     target = hit.point;
                     //Debug.Log("current target AFTER update: " + target.ToString());
-                    seeker.StartPath(transform.position, new Vector3(target.x, transform.position.y, target.z), OnPathComplete);
-                    //Debug.Log("new path AFTER update has waypoint list length: " + path.vectorPath.Count.ToString());
+
+                    //depending on the estimated length of path, decide if A* or potential field is used
+
+                    // A* algorithm time complexity is O(b^d) ~ O((pathlength)^3)
+                    float pathLengthEstimated = (Vector3.Distance(transform.position, new Vector3(target.x, transform.position.y, target.z)) / AstarPath.active.data.gridGraph.nodeSize) ;
+                    int complexityEstimated = (int) Mathf.Pow(pathLengthEstimated, 3);
+
+                    if(simulator.agentPositions.Count * complexityEstimated > AstarPath.active.data.gridGraph.Depth * AstarPath.active.data.gridGraph.Width)
+                    {
+                        UseAStar = false;
+                        Debug.Log("A* is not efficient due to long path or large number of agents...");
+
+                        //update the pathnodes based on potential field method.
+
+                        //generate the potential map based on destination target and gridgraph
+
+                        var gridgraph = AstarPath.active.data.gridGraph;
+
+                        int[,] potentialmap = new int[gridgraph.Depth, gridgraph.Width];
+                        //generate potential map
+                        potentialmap = GameObject.Find("PotentialMap").GetComponent<PotentialMapSet>().GetPotentialMap(target, gridgraph);
+
+                        // generate field map using padded potential map
+
+                        //check the potentialmap
+                        //Debug.Log("potential map is obtained. Above origin, the potential is like : " + potentialmap[48, 49].ToString());
+                        //Debug.Log("potential Map is obtained. Below origin, the potential is like : " + potentialmap[51, 49].ToString());
+
+                        int[,] padded_potentialmap = GameObject.Find("PotentialMap").GetComponent<PotentialMapSet>().PadMap(potentialmap);
+
+                        // visualize the potential map real-time(TODO)
+
+
+                        // generate the field map by doing the gradient of padded potential map
+
+                        UnityEngine.Vector2[,] fieldmap = GameObject.Find("PotentialMap").GetComponent<PotentialMapSet>().GetFieldMap(padded_potentialmap);
+
+                        //Debug.Log("FieldMap is obtained. Above origin, the vector is like : " + fieldmap[49, 49].ToString());
+                        //Debug.Log("FieldMap is obtained. Below origin, the vector is like : " + fieldmap[50, 49].ToString());
+
+                        pathNodes = GameObject.Find("PotentialMap").GetComponent<PotentialMapSet>().GetPathFromFieldMap(transform.position, new Vector3(target.x, transform.position.y, target.z), fieldmap);
+                        currentNodeIndex = 0;
+
+                    }
+                    else
+                    {
+                        seeker.StartPath(transform.position, new Vector3(target.x, transform.position.y, target.z), OnPathComplete);
+                        //Debug.Log("new path AFTER update has waypoint list length: " + path.vectorPath.Count.ToString()); 
+                    }
+
                 }
             }
 
-            if (path == null)
+            if (path == null || pathNodes == null)
             {
                 Debug.Log("No available path found!");
                 return;
 
             }
-            if (currentNodeIndex >= (path.vectorPath.Count - 1))
+            if (currentNodeIndex >= (pathNodes.Count - 1))
             {
                 //Debug.Log("Path Finding ended!");
                 return;

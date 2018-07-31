@@ -6,6 +6,7 @@ using Pathfinding;
 public class PotentialMapSet : MonoBehaviour
 {
     private int largePenalty = 10000;
+    private int repulse = 100000;
     float stepPerGrid;
 
     public List<Vector3> GetPathFromFieldMap(Vector3 startPosition, Vector3 target, Vector2[,] fieldMap)
@@ -25,8 +26,7 @@ public class PotentialMapSet : MonoBehaviour
 
         while ((Mathf.Abs((currentNodePosition - target).x) >= stepPerGrid/2 || Mathf.Abs((currentNodePosition - target).y) >= stepPerGrid / 2) && iterationN < 1000) // add the upper iteration N to prevent getting stuck...
         {
-            resultPathNode.Add(currentNodePosition);
-            iterationN ++;
+
 
             // get the current node index from position
 
@@ -35,7 +35,14 @@ public class PotentialMapSet : MonoBehaviour
 
             // Debug.Log("the current NodePosition:" + currentNodePosition.ToString());
             // Debug.Log("the current index:" +" w: "+ currentIndex_w.ToString() + " d: " + currentIndex_d.ToString());
+            /*
+            if (fieldMap[currentIndex_d, currentIndex_w] != Vector2.zero)
+            {
+                resultPathNode.Add(currentNodePosition);
 
+            }*/
+            resultPathNode.Add(currentNodePosition);
+            iterationN++;
 
             // get the next node index based on field map
             // next node can be obtained in two ways: 1) caculate next index and then get the node position OR 2) calculate the moving vector and then find closest node position
@@ -56,9 +63,26 @@ public class PotentialMapSet : MonoBehaviour
             moveToPosition.y = currentNodePosition.y;
             moveToPosition.z = currentNodePosition.z - fieldMap[currentIndex_d, currentIndex_w].y * stepPerGrid; // note the "-" sign for vertical direction
             nextNodePosition = GetClosestNodePosition(stepPerGrid, fieldMapWidth, fieldMapDepth, moveToPosition);
+            currentNodePosition = nextNodePosition;
             //Debug.Log("Calculate nextNode Position from moveToPosition's closest node" + nextNodePosition.ToString());
 
-            currentNodePosition = nextNodePosition;
+            //check if the nextNode is walkable
+            int nextIndex_w = currentIndex_w + (int)((fieldMap[currentIndex_d, currentIndex_w].x) / 0.5001f);
+            int nextIndex_d = currentIndex_d + (int)((fieldMap[currentIndex_d, currentIndex_w].y) / 0.5001f);
+
+            if (fieldMap[nextIndex_d, nextIndex_w] == Vector2.zero)
+            {
+                // if for some reason agent came to a non-walkable grid, reverse the motion vector based on current and one before current grid in the resultPathNode list
+                moveToPosition.x = 2 * resultPathNode[Mathf.Max(0, resultPathNode.Count - 2)].x - currentNodePosition.x;
+                moveToPosition.y = currentNodePosition.y;
+                moveToPosition.z = 2 * resultPathNode[Mathf.Max(0, resultPathNode.Count - 2)].z - currentNodePosition.z;
+                nextNodePosition = GetClosestNodePosition(stepPerGrid, fieldMapWidth, fieldMapDepth, moveToPosition);
+                currentNodePosition = nextNodePosition;
+                //Debug.Log("agent stuck in local trap...");
+
+            }
+ 
+
         }
         // Debug.Log("The length of current path nodes of vector field" + resultPathNode.Count.ToString());
         return resultPathNode;
@@ -114,7 +138,7 @@ public class PotentialMapSet : MonoBehaviour
 
     public Vector2[,] GetFieldMap(int[,] paddedPotentialMap)
     {
-        //input should be ALREADY padded, otherwise boundary will not be treated. haha. 
+        //input should be ALREADY padded, otherwise boundary will not be treated. 
 
         int potentialRowNum = paddedPotentialMap.GetLength(0);
         int potentialColNum = paddedPotentialMap.GetLength(1);
@@ -138,25 +162,25 @@ public class PotentialMapSet : MonoBehaviour
                     upPotential = paddedPotentialMap[i - 1, j];
                     downPotential = paddedPotentialMap[i + 1, j];
 
-                    // if any point of the four neighbours is non-walkable, use current potential[i,j]
+                    // if any point of the four neighbours is non-walkable, use current potential[i,j] + artificial repulse
                     if(leftPotential == largePenalty)
                     {
-                        leftPotential = paddedPotentialMap[i, j]; 
+                        leftPotential = paddedPotentialMap[i, j] + repulse; 
                     }
 
                     if (rightPotential == largePenalty)
                     {
-                        rightPotential = paddedPotentialMap[i, j];
+                        rightPotential = paddedPotentialMap[i, j] + repulse;
                     }
 
                     if (upPotential == largePenalty)
                     {
-                        upPotential = paddedPotentialMap[i, j];
+                        upPotential = paddedPotentialMap[i, j] + repulse;
                     }
 
                     if (downPotential == largePenalty)
                     {
-                        downPotential = paddedPotentialMap[i, j];
+                        downPotential = paddedPotentialMap[i, j] + repulse;
                     }
 
                     int delta_x = leftPotential - rightPotential;
@@ -167,8 +191,18 @@ public class PotentialMapSet : MonoBehaviour
                 }
                 else
                 {
-                    resultFieldMap[i-1, j-1] = Vector2.zero;
+                    resultFieldMap[i - 1, j - 1] = Vector2.zero;
+                    // if current point is not walkable, move towards the smallest potential point
+                    // TODO
+                    // get the position of current non-walkable point, and find the position of min potential nearby, get the vector difference
+                    /*
+                     * new Vector3((nextIndex_w - fieldMapWidth / 2 + 0.5f) * stepPerGrid, 0.0f, -(nextIndex_d - fieldMapDepth / 2 + 0.5f) * stepPerGrid);
+                    int nextIndex_w = j + (int)((fieldMap[i, j].x) / 0.5001f);
+                    int nextIndex_d = i + (int)((fieldMap[i, j].y) / 0.5001f);
+                    resultFieldMap[i-1, j-1] = new Vector2(minPotentialNearby.x - );
+                    */
                 }
+
             }
         }
 
@@ -271,8 +305,8 @@ public class PotentialMapSet : MonoBehaviour
             }
 
         }
-        Debug.Log("If everything goes as expected, the size of nodeIndicesSearched should be slightly bigger than the walkable total area: " + nodeIndicesSearched.Count);
-        Debug.Log("Total available points should be this number (6100)" + totalAvailable);
+        //Debug.Log("If everything goes as expected, the size of nodeIndicesSearched should be slightly bigger than the walkable total area: " + nodeIndicesSearched.Count);
+        //Debug.Log("Total available points should be this number (check the A* grid info)" + totalAvailable);
 
         return resultMap;
     }

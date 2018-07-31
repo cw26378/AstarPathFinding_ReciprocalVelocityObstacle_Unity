@@ -7,8 +7,8 @@ using RVO;
 public class RVO_Agent : MonoBehaviour {
 
     public Camera cam;
-    public float distToNew;
-
+    //public float distToNew;
+    //public bool UseAStar;
     [SerializeField]
     Vector3 target;
     int currentNodeIndex = 0;
@@ -23,7 +23,7 @@ public class RVO_Agent : MonoBehaviour {
     Seeker seeker;
     Path path;
     CharacterController characterController;
-    bool UseAStar;
+
     // Use IEnumerator for initialization
 
     IEnumerator Start()
@@ -74,7 +74,7 @@ public class RVO_Agent : MonoBehaviour {
 	void FixedUpdate () 
     {
         rallyIsReady = GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
-        UseAStar = true;
+        //UseAStar = true;
 
         if (!rallyIsReady)
         {
@@ -103,7 +103,7 @@ public class RVO_Agent : MonoBehaviour {
 
                     if(simulator.agentPositions.Count * complexityEstimated > AstarPath.active.data.gridGraph.Depth * AstarPath.active.data.gridGraph.Width)
                     {
-                        UseAStar = false;
+                        //UseAStar = false;
                         Debug.Log("A* is not efficient due to long path or large number of agents...");
 
                         //update the pathnodes based on potential field method.

@@ -418,7 +418,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &185907814
 CharacterController:
@@ -554,7 +553,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &187061095
 CharacterController:
@@ -677,7 +675,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 250459361}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 40, y: 0, z: 50}
+  m_LocalPosition: {x: -20, y: 0, z: -60}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 23318036}
@@ -696,7 +694,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &250459364
 CharacterController:
@@ -1023,7 +1020,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &480297827
 CharacterController:
@@ -1328,7 +1324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAACAn+t5fdVINAIAAM0EAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMuS2jAQ/BVK52zKsIGwuSVeluTAQi1J5eKLkMZYhSy59Fhexb9nJBvsNZWT5e6ZVs/DPhOhbAXMaTM3gi80B/JtQMKZfBoQGrk36oRGeIiIsLoEZwT7rrYyxCYIeiVybcoZ30KqrbMI51RaQMpoF7IVQucBOTQJx+Z5Cs/BBU8MlANzH/WQfB5+CPSKSVpWwNfiBG38KLlm4CkGKqyliRmFC7SUwjZOiDtWsdCUVtZjHRjABcXKoocv+FqA2Baun7zMcwuu8Wfo8VkYbFCtSn5oVwSlktpd7eydSg8367Xk4o4dD4eRz40uf16vHSPgCsF2b/TIqHWdnnbh59b1KHZnT+WObiT8LUC96rnRXnEknfEh1VsYPXekboWlBbBdG1db7YG+up9PZziXWPohlaLcBCQODoG11LHZNQAG5/ILHce1sI0UosHFHwu/6ba7Pw3xIox1SDU3qmBvo70JoWQWWxaq8S7VRoHpKlSgqHTHFeq4/gR73P+zXmj4RJrbG+76BfRSItzGJ0mPWuk9XJVsofcLsMXSOylUVywwr9ipVCtVb5jtsSFv7U1OGbQj2nrBPy4XyZ++bibjnG1gkuRP46eH8TSZTPkjfWTTCQzhkcTlEwoLpXJVO236g4NTrbjCVbv+HQZzQ6u47dzQ/VycSm3bSKFyvWYGQC1rhZtxMHgJfpV8xgV2aA3OCRUnTs4ZkZrtgGc3oSxWOjs4Q7NWJSOVeNcuIBlJ448jIxdy+QdQSwMEFAAACAgAAICf61cMWgJtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPUMzTTUVBKL0osyCgGihiCOKWZKSB2tFKapXmSmWlaclKqmUGapamlrqmFgZlFinGicbKFWaphqrFSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAAICf63l91Ug0AgAAzQQAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAICf61cMWgJtAAAAeAAAAAkAJAAAAAAAAAAAAAAAgQIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAAA5AwAAAAA=
+    dataString: UEsDBBQAAAgIAACAn+t2kIgDMwIAAMwEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMuS2jAQ/BVK52zKQCCQW2JYkgMLtSSViy9CHmMVsuTSY3kV/56RbLAxlZPl7p7WvOwL4dKUwKzSC83TpUqBfOsRfyafeoQG7p1arhDuI8KNKsBqzr7LnfDaCEEneaZ0MU93ECtjDcIZFQaQ0sr6aInQpUeOdcCpfp79s3fFEwNpQT+rXqLP/Qehk0zQooR0w8/Q6AfRLQJPQSixllrjHZgSgps6E2JPZSg0pqVxWAcKUk6xspDDF3zNge9y6/3awassM2Dr/DQ9zbjGBlWu5IeyuXcqqNlXmX1Q4eCeemW5fGJH/X7gM62Kn7drhwjYnLP9Oz0xamyrp2141mQ9CN05ULGnWwF/c5BvaqGVkymSVjsf6gwMZi2re2FxDmzf6KpUO6Arn+fTGs41lH6MBS+2HgmDQ2AjVGh2BYDGufzCjMNamNoKUZ/FHwO/6a69PzXxyrWxSNU3Sp/eVjntpWQeWuarcTZWWoJuO5QgqbCnNfrY7gQ73P+jXqn/ROrba+72BXRCAtzoo6hDrdUBbk4mV4clmHzlrOCybeaZN+xUrKSsNsx0WB+3cTqjDJoR7RxPH5eLZNOv2/EoY1sYR9l0NH0ZTaLxJB3SIZuMoQ9DEpaPSyyUinWVad0fHJxszCWu2u3v0FtoWoZtTzU9LPi5UKZRcpmpDdMAcvXgYEDjHfhRpvOUY4M2YC2XYeDkkhCh2B7S5K5PQqHzo9U0aapPSMk/lPVIQuLw30jIlVz/AVBLAwQUAAAICAAAgJ/rVwxaAm0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9QzNNNRUEovSizIKAaKGII4pZkpIHa0UpqleZKZaVpyUqqZQZqlqaWuqYWBmUWKcaJxsoVZqmGqsVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAAgJ/rdpCIAzMCAADMBAAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAgJ/rVwxaAm0AAAB4AAAACQAkAAAAAAAAAAAAAACAAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAADgDAAAAAA==
     upgradeData: 
     file_cachedStartup: {fileID: 4900000, guid: 20d0ebaa716304f2a9e718d71c0adaab,
       type: 3}
@@ -1564,7 +1560,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 712312516}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 45, y: 2, z: 52}
+  m_LocalPosition: {x: -25, y: 2, z: -40}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1974108576}
@@ -1582,7 +1578,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &712312519
 CharacterController:
@@ -1678,7 +1673,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4783587153212236, guid: 5f985fb052a3e44f5ab804cfb96337fb, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4783587153212236, guid: 5f985fb052a3e44f5ab804cfb96337fb, type: 2}
       propertyPath: m_LocalPosition.y
@@ -1686,7 +1681,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4783587153212236, guid: 5f985fb052a3e44f5ab804cfb96337fb, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 20
+      value: -70
       objectReference: {fileID: 0}
     - target: {fileID: 4783587153212236, guid: 5f985fb052a3e44f5ab804cfb96337fb, type: 2}
       propertyPath: m_LocalRotation.x
@@ -2083,7 +2078,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1241554087}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 50, y: 2, z: 25}
+  m_LocalPosition: {x: 0, y: 2, z: -80}
   m_LocalScale: {x: 4, y: 2, z: 4}
   m_Children: []
   m_Father: {fileID: 1974108576}
@@ -2101,7 +2096,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &1241554090
 CharacterController:
@@ -2280,7 +2274,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &1518217340
 CharacterController:
@@ -2608,7 +2601,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &1763492792
 CharacterController:
@@ -3007,7 +2999,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1988241178}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 50, y: 2, z: 27}
+  m_LocalPosition: {x: 0, y: 2, z: -85}
   m_LocalScale: {x: 4, y: 2, z: 4}
   m_Children: []
   m_Father: {fileID: 1974108576}
@@ -3025,7 +3017,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 282840813}
-  distToNew: 0
   target: {x: 0, y: 0, z: 0}
 --- !u!143 &1988241181
 CharacterController:

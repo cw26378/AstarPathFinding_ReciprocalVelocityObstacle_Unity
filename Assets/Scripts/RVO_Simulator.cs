@@ -55,8 +55,7 @@ public class RVO_Simulator : MonoBehaviour {
         Simulator.Instance.setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 2.5f, 40.0f, new RVO.Vector2(0.0f, 0.0f));
 
         // add all existing agents prior to the current agent being added
-        //Debug.Log("current agentPositions count" + agentPositions.Count.ToString());
-        //Debug.Log("current first element in agentPositions: " + agentPositions[0].ToString());
+
         int agentCount = agentPositions.Count;
 
         for (int i = 0; i < agentCount; i++)
@@ -73,7 +72,7 @@ public class RVO_Simulator : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         rallyIsReady = GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
         if (rallyIsReady)

@@ -7,8 +7,8 @@ using RVO;
 public class RVO_Agent : MonoBehaviour {
 
     public Camera cam;
-    //public float distToNew;
-    //public bool UseAStar;
+
+
     [SerializeField]
     Vector3 target;
     int currentNodeIndex = 0;
@@ -16,7 +16,6 @@ public class RVO_Agent : MonoBehaviour {
 
     RVO_Simulator simulator = null;
     private List<Vector3> pathNodes = new List<Vector3>();
-    //bool isAbleToStart = false;
     private bool rallyIsReady = false;
     float thresholdToNode = 4.0f;
 
@@ -32,20 +31,15 @@ public class RVO_Agent : MonoBehaviour {
         cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         simulator = GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>();
         characterController = GetComponent<CharacterController>();
-        // rallyIsReady= GameObject.FindGameObjectWithTag("Manager").GetComponent<UI_ButtonControl>().SpawnIsDone;
-        // pathNodes = new List<Vector3>();
 
         yield return StartCoroutine(StartPaths());
             
         agentIndex = simulator.addAgentToSimulator(transform.position, gameObject, pathNodes);
-        //Debug.Log("current agent index: "+agentIndex);
-        //isAbleToStart = true;
     }
     IEnumerator StartPaths()
     {
         seeker = gameObject.GetComponent<Seeker>();
         target = transform.position + transform.forward * simulator.speed_target * 0.01f;
-        //target = Input.mousePosition;
         path = seeker.StartPath(transform.position, new Vector3(target.x, transform.position.y, target.z), OnPathComplete);
         yield return StartCoroutine(path.WaitForPath());
     }
@@ -61,8 +55,7 @@ public class RVO_Agent : MonoBehaviour {
         }
         else
         {
-            // Yay, now we can get a Vector3 representation of the path
-            // from p.vectorPath
+            // Yay, now we can get a Vector3 representation of the path from p.vectorPath
             path = p;
             pathNodes = p.vectorPath;
 
@@ -85,7 +78,7 @@ public class RVO_Agent : MonoBehaviour {
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("New click activated! Current target at click: " + Input.mousePosition.ToString());
+                //Debug.Log("New click activated! Current target at click: " + Input.mousePosition.ToString());
 
                 Ray ray = cam.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
@@ -93,7 +86,7 @@ public class RVO_Agent : MonoBehaviour {
                 if (Physics.Raycast(ray, out hit))
                 {
                     target = hit.point;
-                    //Debug.Log("current target AFTER update: " + target.ToString());
+                    Debug.Log("current target AFTER update: " + target.ToString());
 
                     //depending on the estimated length of path, decide if A* or potential field is used
 
@@ -103,20 +96,16 @@ public class RVO_Agent : MonoBehaviour {
 
                     if(simulator.agentPositions.Count * complexityEstimated > AstarPath.active.data.gridGraph.Depth * AstarPath.active.data.gridGraph.Width)
                     {
-                        //UseAStar = false;
                         Debug.Log("A* is not efficient due to long path or large number of agents...");
 
                         //update the pathnodes based on potential field method.
-
                         //generate the potential map based on destination target and gridgraph
 
                         var gridgraph = AstarPath.active.data.gridGraph;
-
                         int[,] potentialmap = new int[gridgraph.Depth, gridgraph.Width];
+
                         //generate potential map
                         potentialmap = GameObject.Find("PotentialMap").GetComponent<PotentialMapSet>().GetPotentialMap(target, gridgraph);
-
-                        // generate field map using padded potential map
 
                         //check the potentialmap
                         //Debug.Log("potential map is obtained. Above origin, the potential is like : " + potentialmap[48, 49].ToString());
@@ -128,7 +117,6 @@ public class RVO_Agent : MonoBehaviour {
 
 
                         // generate the field map by doing the gradient of padded potential map
-
                         UnityEngine.Vector2[,] fieldmap = GameObject.Find("PotentialMap").GetComponent<PotentialMapSet>().GetFieldMap(padded_potentialmap);
 
                         //Debug.Log("FieldMap is obtained. Above origin, the vector is like : " + fieldmap[49, 49].ToString());
@@ -168,19 +156,22 @@ public class RVO_Agent : MonoBehaviour {
                 // This value will smoothly go from 1 to 0 as the agent approaches the last waypoint in the path.
                 //var speedFactor = reachedEndOfPath ? Mathf.Sqrt(distanceToWaypoint / nextWaypointDistance) : 1f;
 
-                //Debug.Log("Current WayPoint = " + path.vectorPath[currentNodeIndex].ToString());
-                //Debug.Log("Current Position = " + transform.position.ToString());
-
-                //Debug.Log("Distance to move = " + velocity.ToString());
-
                 //characterController.SimpleMove(velocity);
             }
         }	
 	}
+
     //obtain the next Path node point 
     public RVO.Vector2 nextPathNode()
     {
         Vector3 node_pos;
+        if (pathNodes == null)
+        {
+            // if the pathNodes is empty, return current position
+            node_pos = transform.position;
+            return new RVO.Vector2(node_pos.x, node_pos.z);
+
+        }
         if(currentNodeIndex < pathNodes.Count)
         {
             node_pos = pathNodes[currentNodeIndex];
@@ -201,7 +192,6 @@ public class RVO_Agent : MonoBehaviour {
 
     void CheckPushAway()
     {
-        //List<GameObject> NearbyAgentList  = new List<GameObject>();
         foreach(var agent in GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>().rvoGameObjs)
         {
             float agentDist = Vector3.Distance(agent.transform.position, transform.position);

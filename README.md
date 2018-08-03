@@ -1,5 +1,5 @@
 # AstarPathFinding_ReciprocalVelocityObstacle_Unity
-### Multiple agents path finding using A* algorithm, combined with RVO for local collision avoidance.
+### Multiple agents path finding using A* algorithm, and potential-field algorithm, combined with reciprocal velocity obstacle (RVO) for local collision avoidance.
 
 ### Update on 07/31/2018
 Action items completed
@@ -59,7 +59,7 @@ Agents are defined by prefabs, currently either `RVOAgent` or `AirAgent`, each h
       }
 
 
-Basically the CheckPushAway function check the distance between each agents and push one self away from any agent close by along the opposite of the agent to to agent direcetion, as long as the agent is not entering non-walkable regime. The effect of pushing away each other can be clearly seen at the instantiation. 
+Basically the `CheckPushAway` function check the distance between each agents and push one self away from any agent close by along the opposite of the agent to to agent direcetion, as long as the agent is not entering non-walkable regime. The effect of pushing away each other can be clearly seen at the instantiation. 
 
 ## 2. Path finding based on A* algorithm implemented with reciprocal velocity obstacle (RVO) 
 

@@ -16,6 +16,9 @@ Action items in the following:
 relative size of group and map
 4. How to use ECS (Entity-Component System)
 
+### Update on 08/03/2018
+
+add a documentation for illustraing the framework the project.
 # Documentation on the framework of path finding project
 
 ## Outline
@@ -41,10 +44,10 @@ spawning of agents, it is needed that each unit will push away other units close
 This is done in the function `CheckPushAway()` in RVO_Agent:
 
 `
- void CheckPushAway()
-    {
-        foreach(var agent in GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>().rvoGameObjs)
-        {
+      void CheckPushAway()
+      {
+         foreach(var agent in GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>().rvoGameObjs)
+         {
             float agentDist = Vector3.Distance(agent.transform.position, transform.position);
             if (agentDist > 0 &&  agentDist < (characterController.radius + agent.GetComponent < CharacterController>().radius) * 1.25f)
             {
@@ -53,18 +56,16 @@ This is done in the function `CheckPushAway()` in RVO_Agent:
                 {
                     transform.Translate(dirMove * Time.deltaTime);
                 }
-                    
+
             }
         }
-
-        // the tranform need update in the agentPositionlist
         if (agentIndex != -1)
         {
-           GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>().agentPositions[agentIndex] = new RVO.Vector2(transform.position.x, transform.position.z);
+           GameObject.FindGameObjectWithTag("RVO_sim").GetComponent<RVO_Simulator>().agentPositions[agentIndex] =   
+           new RVO.Vector2(transform.position.x, transform.position.z);
         }
-
     }
-`
+   `
 
 Basically the CheckPushAway function check the distance between each agents and push one self away from any agent close by along the 
 opposite of the agent to to agent direcetion, as long as the agent is not entering non-walkable regime. The effect of pushing away each 
@@ -94,19 +95,17 @@ AstarPath.active.data.gridGraph.Width))`
 The potential field search is implemented in script `PotentialFieldSet`. Functions related to potential field method are called in the 
 RVOAgent script.The major steps and work flow are explained as following:
 
-1. The first step is to generate potential map, done by function `GetPotentialMap(target, gridgraph)`. `target` is obtained from 
+### 1. Generate potential map
+The first step is to generate potential map, done by function `GetPotentialMap(target, gridgraph)`. `target` is obtained from 
 mousePosition, and `gridgraph` is obtained from the A* grid. In `GeneratePotentialMap`, it is needed to find the grid node that contains the target position. `gridgraph.GetNearest()` method is used to get target node index. This node is conisdered the "source" of an attracting potential in the current map, and thus the potential value of this node is set to zero. Beginning from this source point, the potential map is calculated using standard breadth first search. 
 
 Each node will expand to the neighboring nodes (except the one already visited) and potential value of new nodes will be previous 
 potential value + 1:
 
-`        //searched HashSet 
+`        
+        //searched HashSet 
         HashSet<int> nodeIndicesSearched = new HashSet<int>();
         nodeIndicesSearched.Add(gridGraph.GetNearest(target).node.NodeIndex);
-
-        //Queue<GraphNode> nodesQueue = new Queue<GraphNode>();
-        //nodesQueue.Enqueue(gridGraph.GetNearest(target).node);
-
 
         Queue<List<float>> coordinateQueue = new Queue<List<float>>();
         coordinateQueue.Enqueue(new List<float> {target_w, target_d });
@@ -165,7 +164,8 @@ potential value + 1:
 
 Note that although 4 directions will be checked for each node expansion, only newly visited nodes will change the potential value. A hash set `nodeIndicesSearched` stores all the visited nodes indices. In the end, all walkable nodes will be traversed, and the non-walkable nodes will remain at the initial value `largePenalty`, which is considerably larger than normal potential values (currently set to 10000).
 
-2.The next step is to generate field map from the potential map, and is done in the function ` public Vector2[,] GetFieldMap(int[,] paddedPotentialMap)`. The input is a padded potential map (2D int array), and returns a 2D Vector2 array. 
+### 2. Generate field map
+The next step is to generate field map from the potential map, and is done in the function ` public Vector2[,] GetFieldMap(int[,] paddedPotentialMap)`. The input is a padded potential map (2D int array), and returns a 2D Vector2 array. 
 
 The original potential map resulted from  `GetPotentialMap` is padded by one unit along the boundaries (done in `public int[,] PadMap(int[,] potentialMap)`), dimension going from `N * N` to `(N+2) * (N+2)`, the padding is to make the vector derivative of potential field around the edges easier to be treated.
 
@@ -174,44 +174,92 @@ Based on the padded potential map, the field is calculated for each node of the 
 For each (i,j) of potentialMap, if the node is walkable:
 
 `if (paddedPotentialMap[i, j] != largePenalty && paddedPotentialMap[i, j] != 0) 
- // current potential map point is walkable and is not the target
-                {
-                    //partial derivative along x(column) and y(row) direction
-                    //need to consider the boundary points separately... is there a smarter way?
+ {
+     //partial derivative along x(column) and y(row) direction
+     //need to consider the boundary points separately... is there a smarter way?
 
-                    leftPotential = paddedPotentialMap[i, j - 1];
-                    rightPotential = paddedPotentialMap[i, j + 1];
-                    upPotential = paddedPotentialMap[i - 1, j];
-                    downPotential = paddedPotentialMap[i + 1, j];
+     leftPotential = paddedPotentialMap[i, j - 1];
+     rightPotential = paddedPotentialMap[i, j + 1];
+     upPotential = paddedPotentialMap[i - 1, j];
+     downPotential = paddedPotentialMap[i + 1, j];
 
-                    // if any point of the four neighbours is non-walkable, use current potential[i,j] + artificial repulse
-                    if (leftPotential == largePenalty)
-                    {
-                        leftPotential = paddedPotentialMap[i, j] + repulse;
-                    }
+     // if any point of the four neighbours is non-walkable, use current potential[i,j] + artificial repulse
+     if (leftPotential == largePenalty)
+     {
+         leftPotential = paddedPotentialMap[i, j] + repulse;
+     }
 
-                    if (rightPotential == largePenalty)
-                    {
-                        rightPotential = paddedPotentialMap[i, j] + repulse;
-                    }
+     if (rightPotential == largePenalty)
+     {
+         rightPotential = paddedPotentialMap[i, j] + repulse;
+     }
 
-                    if (upPotential == largePenalty)
-                    {
-                        upPotential = paddedPotentialMap[i, j] + repulse;
-                    }
+     if (upPotential == largePenalty)
+     {
+         upPotential = paddedPotentialMap[i, j] + repulse;
+     }
 
-                    if (downPotential == largePenalty)
-                    {
-                        downPotential = paddedPotentialMap[i, j] + repulse;
-                    }
+     if (downPotential == largePenalty)
+     {
+         downPotential = paddedPotentialMap[i, j] + repulse;
+     }
 
-                    int delta_x = leftPotential - rightPotential;
-                    int delta_y = upPotential - downPotential; // delta_y > 0 means pointind down
+     int delta_x = leftPotential - rightPotential;
+     int delta_y = upPotential - downPotential; // delta_y > 0 means pointind down
 
-                    resultFieldMap[i - 1, j - 1] = new Vector2(delta_x, delta_y).normalized;
+     resultFieldMap[i - 1, j - 1] = new Vector2(delta_x, delta_y).normalized;
 
-                }
+}`
+But the scenario of treating non-walkable area is a little bit tricky. Initially the field map of non-walkable is set to zero, which clearly cannot work because the agent will not move anywhere once located in the non-walkable point after update. I end up with the following mechanism to deal with agent into the non-walkable area: for a non-walkable point, search all eight neighbors of the point and find the minimal potential of from these eight nodes, and let the vector field point from the current non-walkable node to that node with minimal potential field. The code snippet is the following:
+
 `
+
+        List<List<int>> grid_Proximity = new List<List<int>>();
+        grid_Proximity.Add(new List<int> { -1, 0 }); // w-1 : left
+        grid_Proximity.Add(new List<int> { 1, 0 }); // w+1 : right
+        grid_Proximity.Add(new List<int> { 0, -1 }); // d-1 : up
+        grid_Proximity.Add(new List<int> { 0, 1 }); // d+1 : down
+        grid_Proximity.Add(new List<int> { -1, 1 }); // w-1, d+1: lower left
+        grid_Proximity.Add(new List<int> { 1, 1 }); // w+1 , d+1: lower right
+        grid_Proximity.Add(new List<int> { -1, -1 }); // w-1, d-1 : upper left
+        grid_Proximity.Add(new List<int> { 1, -1 }); // w+1, d-1 : upper right
+
+        int minPotentialProximity = paddedPotentialMap[i, j];
+        List<int> minPotentialIndex = new List<int>{0, 0};
+
+
+        // find the proximity point with smallest potential
+        for (int k = 0; k < grid_Proximity.Count; k++)
+        {
+            int checkPotential_w = NonWalkable_w + grid_Proximity[k][0];
+            int checkPotential_d = NonWalkable_d + grid_Proximity[k][1];
+            int checkPotential = paddedPotentialMap[checkPotential_d, checkPotential_w];
+
+            if (checkPotential < minPotentialProximity)
+            {
+                minPotentialProximity = checkPotential;
+                minPotentialIndex[1] = grid_Proximity[k][1];
+                minPotentialIndex[0] = grid_Proximity[k][0];
+            }
+
+        }
+        resultFieldMap[i - 1, j - 1] = new Vector2(minPotentialIndex[0], minPotentialIndex[1]).normalized;
+               
+`
+### 3. Get path from FieldMap
+The final step is to get the path as a list of node coordinates, as is realized in 
+`public List<Vector3> GetPathFromFieldMap(Vector3 startPosition, Vector3 target, Vector2[,] fieldMap)`. 
+For each agent's position as a starting point `startPosition` and destination `target`, the next node position is obtained based on the field map `fieldmap`:
+
+`
+         moveToPosition.x = currentNodePosition.x + fieldMap[currentIndex_d, currentIndex_w].x * stepPerGrid;
+         moveToPosition.y = currentNodePosition.y;
+         // note the "-" sign for vertical direction
+         moveToPosition.z = currentNodePosition.z - fieldMap[currentIndex_d, currentIndex_w].y * stepPerGrid; 
+         nextNodePosition = GetClosestNodePosition(stepPerGrid, fieldMapWidth, fieldMapDepth, moveToPosition);
+         currentNodePosition = nextNodePosition;
+`
+The above is executed until the agent position and target are within the size of one node.
 
 
 

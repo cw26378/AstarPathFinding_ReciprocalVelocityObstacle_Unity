@@ -6,7 +6,7 @@ using Pathfinding;
 public class PotentialMapSet : MonoBehaviour
 {
     private int largePenalty = 10000;
-    private int repulse = 100;
+    private int repulse = 1000;
     float stepPerGrid;
 
     // GetPathFromFieldMap returns the PathNode list from field map
@@ -77,11 +77,13 @@ public class PotentialMapSet : MonoBehaviour
             if (fieldMap[nextIndex_d, nextIndex_w] == Vector2.zero)
             {
                 // if for some reason agent came to a non-walkable grid, reverse the motion vector based on current and one before current grid in the resultPathNode list
+                /*
                 moveToPosition.x = 2 * resultPathNode[Mathf.Max(0, resultPathNode.Count - 2)].x - currentNodePosition.x;
                 moveToPosition.y = currentNodePosition.y;
                 moveToPosition.z = 2 * resultPathNode[Mathf.Max(0, resultPathNode.Count - 2)].z - currentNodePosition.z;
                 nextNodePosition = GetClosestNodePosition(stepPerGrid, fieldMapWidth, fieldMapDepth, moveToPosition);
                 currentNodePosition = nextNodePosition;
+                */
                 Debug.Log("agent stuck in local trap...");
 
             }

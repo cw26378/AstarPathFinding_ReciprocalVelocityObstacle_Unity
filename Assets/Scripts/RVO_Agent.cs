@@ -90,14 +90,17 @@ public class RVO_Agent : MonoBehaviour {
 
                     //depending on the estimated length of path, decide if A* or potential field is used
 
-                    // A* algorithm time complexity is O(b^d) ~ O((pathlength)^3)
+                    // A* algorithm time complexity is O(b^d) ~ O((3)^PathLength)
                     float pathLengthEstimated = (Vector3.Distance(transform.position, new Vector3(target.x, transform.position.y, target.z)) / AstarPath.active.data.gridGraph.nodeSize) ;
-                    int complexityEstimated = (int) Mathf.Pow(pathLengthEstimated, 3);
+                    long complexityEstimated = (int) Mathf.Pow(3, (int)pathLengthEstimated);
 
-                    if(simulator.agentPositions.Count * complexityEstimated > AstarPath.active.data.gridGraph.Depth * AstarPath.active.data.gridGraph.Width)
+
+                    //Debug.Log("Log of Total number of nodes:" + (Mathf.Log(AstarPath.active.data.gridGraph.Depth * AstarPath.active.data.gridGraph.Width)).ToString());
+                    //Debug.Log("Complexity of A* : " + (Mathf.Log(simulator.agentPositions.Count) + 3 * Mathf.Log(pathLengthEstimated)).ToString());
+                  
+                    if(Mathf.Log(simulator.agentPositions.Count) + 3 * Mathf.Log(pathLengthEstimated) > Mathf.Log(AstarPath.active.data.gridGraph.Depth * AstarPath.active.data.gridGraph.Width))
                     {
                         Debug.Log("A* is not efficient due to long path or large number of agents...");
-
                         //update the pathnodes based on potential field method.
                         //generate the potential map based on destination target and gridgraph
 

@@ -35,7 +35,7 @@ A canvas with three buttons are added for simple user interface. Basically it al
    
 Agents are defined by prefabs, currently either `RVOAgent` or `AirAgent`, each having a script attached. In the stage of deploying or spawning of agents, it is needed that each unit will push away other units closerby when the local point of mouse click gets crowded. This is done in the function `CheckPushAway()` in RVO_Agent:
 
-`
+
 
       void CheckPushAway()
       {
@@ -57,7 +57,7 @@ Agents are defined by prefabs, currently either `RVOAgent` or `AirAgent`, each h
             new RVO.Vector2(transform.position.x, transform.position.z);
          }
       }
-`
+
 
 Basically the CheckPushAway function check the distance between each agents and push one self away from any agent close by along the opposite of the agent to to agent direcetion, as long as the agent is not entering non-walkable regime. The effect of pushing away each other can be clearly seen at the instantiation. 
 
@@ -83,7 +83,7 @@ mousePosition, and `gridgraph` is obtained from the A* grid. In `GeneratePotenti
 
 Each node will expand to the neighboring nodes (except the one already visited) and potential value of new nodes will be previous potential value + 1:
 
-`        
+        
          
          
           //searched HashSet 
@@ -143,7 +143,7 @@ Each node will expand to the neighboring nodes (except the one already visited) 
                   }
               }
           }
-`
+
 
 Note that although 4 directions will be checked for each node expansion, only newly visited nodes will change the potential value. A hash set `nodeIndicesSearched` stores all the visited nodes indices. In the end, all walkable nodes will be traversed, and the non-walkable nodes will remain at the initial value `largePenalty`, which is considerably larger than normal potential values (currently set to 10000).
 
@@ -156,7 +156,7 @@ Based on the padded potential map, the field is calculated for each node of the 
 
 For each (i,j) of potentialMap, if the node is walkable:
 
-      `
+      
       if (paddedPotentialMap[i, j] != largePenalty && paddedPotentialMap[i, j] != 0) 
        {
             //partial derivative along x(column) and y(row) direction
@@ -194,11 +194,12 @@ For each (i,j) of potentialMap, if the node is walkable:
            resultFieldMap[i - 1, j - 1] = new Vector2(delta_x, delta_y).normalized;
 
       }
-      `
+      
+      
 
 But the scenario of treating non-walkable area is a little bit tricky. Initially the field map of non-walkable is set to zero, which clearly cannot work because the agent will not move anywhere once located in the non-walkable point after update. I end up with the following mechanism to deal with agent into the non-walkable area: for a non-walkable point, search all eight neighbors of the point and find the minimal potential of from these eight nodes, and let the vector field point from the current non-walkable node to that node with minimal potential field. The code snippet is the following:
 
-`          
+         
 
 
 
@@ -233,13 +234,13 @@ But the scenario of treating non-walkable area is a little bit tricky. Initially
             }
             resultFieldMap[i - 1, j - 1] = new Vector2(minPotentialIndex[0], minPotentialIndex[1]).normalized;
                
-`
+
 ### 3. Get path from FieldMap
 The final step is to get the path as a list of node coordinates, as is realized in 
 `public List<Vector3> GetPathFromFieldMap(Vector3 startPosition, Vector3 target, Vector2[,] fieldMap)`. 
 
 For each agent's position as a starting point `startPosition` and destination `target`, the next node position is obtained based on the field map `fieldmap`:
-`
+
 
               
       moveToPosition.x = currentNodePosition.x + fieldMap[currentIndex_d, currentIndex_w].x * stepPerGrid;
@@ -248,8 +249,9 @@ For each agent's position as a starting point `startPosition` and destination `t
       moveToPosition.z = currentNodePosition.z - fieldMap[currentIndex_d, currentIndex_w].y * stepPerGrid; 
       nextNodePosition = GetClosestNodePosition(stepPerGrid, fieldMapWidth, fieldMapDepth, moveToPosition);
       currentNodePosition = nextNodePosition;
-         
 `
+         
+
 The above is executed until the agent position and target are within the size of one node.
 
 In the `RVO_Agent` script, the lists of path nodes feeding into RVO simualtor either come from A star PathFinding package, or from potential vector field map. Once such list of path nodes are obtained and given to RVO simulator, the agent motion will follow the same control.  
